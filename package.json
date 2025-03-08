@@ -4,8 +4,8 @@
   "description": "Test assignment for seven winds studio",
   "main": "src/index.tsx",
   "scripts": {
-    "serve": "vite src",
-    "build": "vite build src --outDir ../build --emptyOutDir"
+    "serve": "vite src --config vite.config.ts",
+    "build": "vite build src --outDir ../build --emptyOutDir --config vite.config.ts"
   },
   "author": "Rykov Dmitrii",
   "license": "MIT",
