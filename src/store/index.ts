@@ -1,11 +1,26 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { entityApi } from './entity.api';
+import { rowsSlice } from './slices';
+import { TreeResponse } from '../models';
 
 const rootReducer = combineReducers({
-    [entityApi.reducerPath]: entityApi.reducer
-})
+    [rowsSlice.name]: rowsSlice.reducer,
+    [entityApi.reducerPath]: entityApi.reducer,
+});
 export const store = configureStore({
     reducer: rootReducer,
-    preloadedState: {},
+    preloadedState: {
+        rows: {
+            root: null,
+            nodes: []
+        },
+    },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(entityApi.middleware)
 });
+
+export type RootState = {
+    rows: {
+        root: TreeResponse;
+        nodes: Array<TreeResponse>;
+    };
+}
