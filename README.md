@@ -26,3 +26,4 @@ for run eslint
 
 for production build
 
+Until the API is available only through HTTP, it is necessary to allow insecure content in the site settings.
