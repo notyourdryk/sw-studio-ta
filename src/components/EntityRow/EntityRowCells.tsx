@@ -9,7 +9,7 @@ export function EntityRowCells(props: EntityRowCellsProps) {
 
     return (
         <>
-            <TableCell>
+            <TableCell sx={{ width: '50%'}}>
                 {rowName}
             </TableCell>
             <TableCell>

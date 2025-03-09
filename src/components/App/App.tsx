@@ -10,7 +10,7 @@ const eID = 148668;
 
 const theme = createTheme({
     palette: {
-        mode: 'light'
+        mode: 'dark'
     }
 });
 export function App() {

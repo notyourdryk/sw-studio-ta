@@ -8,6 +8,7 @@ type EditRowButtonProps = {
     onDelete: () => void;
     level?: number;
 }
+
 export function EditRowButton({ onAdd, onDelete, level = 0 }: EditRowButtonProps) {
     const slotProps = {
         popper: {
@@ -23,7 +24,7 @@ export function EditRowButton({ onAdd, onDelete, level = 0 }: EditRowButtonProps
     };
 
     return (
-        <Box paddingLeft={level * 2}>
+        <Box paddingLeft={level * 2} >
             <Tooltip slotProps={slotProps} title={<EditRowPopper onAdd={onAdd} onDelete={onDelete}/>}>
                 <Feed color="primary" />
             </Tooltip>

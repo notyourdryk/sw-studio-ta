@@ -1,7 +1,7 @@
 import { TreeResponse } from '../../models';
 import React, { JSX } from 'react';
 import { EntityRow } from '../EntityRow/EntityRow';
-import { Container, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { TABLE_COLUMN_HEADERS } from '../../const';
 
 type EntityTableProps = {
@@ -21,12 +21,11 @@ function TableHeader() {
 }
 
 export function EntityTable({ rows }: EntityTableProps): JSX.Element {
-    return (<Container disableGutters>
+    return (
         <Table size="small">
             <TableHeader />
-            <TableBody>
+            <TableBody className="tree">
                 {rows.map((item) => (<EntityRow {...item} key={item.id}/>))}
             </TableBody>
-        </Table>
-    </Container>);
+        </Table>);
 }
