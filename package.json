@@ -5,7 +5,8 @@
   "main": "src/index.tsx",
   "scripts": {
     "serve": "vite src --config vite.config.ts",
-    "build": "vite build src --outDir ../build --emptyOutDir --config vite.config.ts"
+    "build": "vite build src --outDir ../build --emptyOutDir --config vite.config.ts",
+    "lint": "eslint src"
   },
   "author": "Rykov Dmitrii",
   "license": "MIT",

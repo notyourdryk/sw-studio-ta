@@ -1,4 +1,4 @@
-import { BaseQueryMeta, BaseQueryResult, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { deleteRow, updateRow } from './slices';
 
 const entityId = 148668;

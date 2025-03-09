@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { defaultNode } from '../const';
 import { TreeResponse } from '../models';
 import { RootState } from './index';
 
