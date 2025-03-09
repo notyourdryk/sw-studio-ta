@@ -1,16 +1,17 @@
 import React, { ChangeEvent, ElementType, JSX, useState } from 'react';
-import { TableCell, TextField } from '@mui/material';
+import { TableCell, TextField, TextFieldProps } from '@mui/material';
 import { RowResponse } from '../../models';
-import { TABLE_COLUMNS } from '../../conts';
+import { TABLE_COLUMNS } from '../../const';
 
 type EntityCellProps = {
     Component: ElementType;
     name: keyof RowResponse;
     value: string | number;
     onChange: (name: keyof RowResponse, value: string | number) => void;
+    componentProps?: TextFieldProps;
 };
 
-function EntityCell({ Component, value, name, onChange }: EntityCellProps) {
+function EntityCell({ Component, value, name, onChange, componentProps = {} }: EntityCellProps) {
     const [fieldValue, setFieldValue] = useState(value);
     const handleChange = (ev: ChangeEvent<HTMLInputElement>) => {
         setFieldValue(ev.target.value);
@@ -19,7 +20,7 @@ function EntityCell({ Component, value, name, onChange }: EntityCellProps) {
 
     return (
         <TableCell>
-            <Component size="small" fullWidth value={fieldValue} onChange={handleChange}/>
+            <Component {...componentProps} size="small" fullWidth value={fieldValue} onChange={handleChange}/>
         </TableCell>);
 }
 
@@ -30,7 +31,9 @@ type EditEntityRowCellsProps = RowResponse & {
 export function EditEntityCells(props: EditEntityRowCellsProps): JSX.Element {
     return (
         <>
-            {TABLE_COLUMNS.map(({ id }) => (<EntityCell
+
+            <EntityCell componentProps={{ autoFocus: true }} Component={TextField} name="rowName" value={props.rowName} onChange={props.onChange} />
+            {TABLE_COLUMNS.slice(1).map(({ id }) => (<EntityCell
                 key={`${props.id}-${id}`}
                 onChange={props.onChange}
                 Component={TextField}

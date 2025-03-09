@@ -11,7 +11,7 @@ export const store = configureStore({
     reducer: rootReducer,
     preloadedState: {
         rows: {
-            root: null,
+            root: [],
             nodes: []
         },
     },
@@ -20,7 +20,7 @@ export const store = configureStore({
 
 export type RootState = {
     rows: {
-        root: TreeResponse;
+        root: Array<TreeResponse>;
         nodes: Array<TreeResponse>;
     };
 }

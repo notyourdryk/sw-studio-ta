@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { BaseQueryMeta, BaseQueryResult, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { deleteRow, updateRow } from './slices';
 
 const entityId = 148668;
 export const entityApi = createApi({
@@ -11,22 +12,13 @@ export const entityApi = createApi({
             query: ({ entityId }) => `/v1/outlay-rows/entity/${entityId}/row/list`
         }),
         createRow: build.mutation({
-            query: ({ parentId }) => {
+            query: ({ parentId, body }) => {
                 return ({
                     url: `/v1/outlay-rows/entity/${entityId}/row/create`,
                     method: 'POST',
                     body: {
-                        equipmentCosts: 0,
-                        estimatedProfit: 0,
-                        machineOperatorSalary: 0,
-                        mainCosts: 0,
-                        materials: 0,
-                        mimExploitation: 0,
-                        overheads: 0,
                         parentId,
-                        rowName: "",
-                        salary: 0,
-                        supportCosts: 0
+                        ...body
                     }
                 })
             }
@@ -36,7 +28,14 @@ export const entityApi = createApi({
                 url: `/v1/outlay-rows/entity/${entityId}/row/${rowId}/update`,
                 method: 'POST',
                 body
-            })
+            }),
+            onQueryStarted({ rowId, parentId, body }, { dispatch }) {
+                dispatch(updateRow({
+                    rowId,
+                    parentId,
+                    body
+                }))
+            }
         }),
         deleteRow: build.mutation({
             query: ({ rowId }) => {
@@ -44,6 +43,9 @@ export const entityApi = createApi({
                     url: `/v1/outlay-rows/entity/${entityId}/row/${rowId}/delete`,
                     method: 'DELETE'
                 })
+            },
+            onQueryStarted({ rowId }, { dispatch }) {
+                dispatch(deleteRow({ rowId }));
             }
         }),
     }),

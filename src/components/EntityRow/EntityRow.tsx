@@ -4,30 +4,37 @@ import { ClickAwayListener, TableCell, TableRow } from '@mui/material';
 import { EditRowButton } from '../EditRowButton';
 import { EntityRowCells } from './EntityRowCells';
 import { EditEntityCells } from './EditEntityRowCells';
-import { useDispatch } from 'react-redux';
-import { addRow, deleteRow, updateRow } from '../../store/slices';
+import { useDispatch, useSelector } from 'react-redux';
 import { useCreateRowMutation, useDeleteRowMutation, useUpdateRowMutation } from '../../store/entity.api';
+import { RootState } from '../../store';
+import { defaultNode } from '../../const';
+import { addRow, deleteRow, updateRow } from '../../store/slices';
 
 type EntityRowProps = TreeResponse & {
-    level: number;
+    level?: number;
+    parentId?: number;
+    isTemp?: boolean;
 };
 
-export function EntityRow({ child, level, ...props }: EntityRowProps) {
-    const dispatch = useDispatch();
+export function EntityRow({ level = 0, ...props }: EntityRowProps) {
     const [changes, setChanges] = useState<Partial<RowResponse>>({});
-    const [isEdit, setIsEdit] = useState(false);
-    const [updateRowMutation] = useUpdateRowMutation();
     const [deleteRowMutation] = useDeleteRowMutation();
+    const [updateRowMutation] = useUpdateRowMutation();
     const [createRowMutation] = useCreateRowMutation();
+    const [isEdit, setIsEdit] = useState(props.id < 0);
+    const dispatch = useDispatch();
+
+    const row = useSelector(({ rows }: RootState) => {
+        return rows.nodes.find(({ id }) => id === props.id);
+    });
+
+    if (!row) return;
 
     const onDeleteRow = () => {
-        dispatch(deleteRow(props.id));
         deleteRowMutation(({ rowId: props.id }));
-        console.log('onDeleteRow', props.id);
     };
     const onAddRow = () => {
-        dispatch(addRow(props.id));
-        createRowMutation({ parentId: props.id });
+        dispatch(addRow({ parentId: props.id, body: {...defaultNode, id: -1 } }));
     };
 
     const setEditMode = () => {
@@ -43,22 +50,37 @@ export function EntityRow({ child, level, ...props }: EntityRowProps) {
     const handleKeyDown = (ev: React.KeyboardEvent) => {
         switch (ev.key) {
             case 'Enter':
-                console.log(changes);
-                dispatch(updateRow({
-                    ...props,
-                    ...changes,
-                    id: props.id
-                }));
-                updateRowMutation({
-                    rowId: props.id,
-                    body: {
-                        ...props,
-                        ...changes,
-                    }
-                });
+                if (props.id < 0) {
+                    createRowMutation({
+                        parentId: props.parentId,
+                        body: {
+                            ...props,
+                            ...changes
+                        }
+                    }).unwrap().then((result) => {
+                        dispatch(updateRow({
+                            parentId: props.parentId,
+                            rowId: -1,
+                            body: { ...result.current, child: [] }
+                        }));
+                    });
+                } else {
+                    updateRowMutation({
+                        rowId: props.id,
+                        parentId: props.parentId,
+                        body: {
+                            ...props,
+                            ...changes,
+                        }
+                    });
+                }
+
                 disableEditMode();
                 break;
             case 'Escape':
+                if (props.id < 0) {
+                    dispatch(deleteRow({ rowId: props.id, parentId: props.parentId }));
+                }
                 if (isEdit)
                     disableEditMode();
                 break;
@@ -72,10 +94,10 @@ export function EntityRow({ child, level, ...props }: EntityRowProps) {
                     <TableCell>
                         <EditRowButton level={level} onAdd={onAddRow} onDelete={onDeleteRow}/>
                     </TableCell>
-                    {isEdit ? <EditEntityCells onChange={handleRowChange} {...props} /> : <EntityRowCells {...props}/>}
+                    {isEdit ? <EditEntityCells onChange={handleRowChange} {...props} /> : <EntityRowCells {...row}/>}
                 </TableRow>
             </ClickAwayListener>
-            {child.map(item => (<EntityRow key={item.id} {...item} level={level + 1}/>))}
+            {row.child.map(item => (<EntityRow parentId={props.id} key={item.id} {...item} level={level + 1}/>))}
         </>
     );
 }
