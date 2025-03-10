@@ -1,6 +1,6 @@
 # Test assignment for seven winds studio
 
-[Demo](https://notyourdryk.github.io/sw-sutdio-ta)
+[Demo](https://notyourdryk.github.io/sw-studio-ta/)
 
 *Used technologies*
  - Material ui
